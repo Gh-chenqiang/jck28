@@ -1,18 +1,21 @@
 package com.ceshiren.javacourse;
 
+/**
+ * @author chenqiang
+ */
 public class Student {
 
-    private int id;
+    private int snu;
     private String name;
 
     private String sex ;
 
-    public int getId() {
-        return id;
+    public int getSnu() {
+        return snu;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSnu(int snu) {
+        this.snu = snu;
     }
 
     public String getName() {
