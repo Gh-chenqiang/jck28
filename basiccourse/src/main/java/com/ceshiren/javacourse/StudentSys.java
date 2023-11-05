@@ -1,10 +1,13 @@
 package com.ceshiren.javacourse;
 
-import com.ceshiren.utils.MenuNumException;
-import com.ceshiren.utils.SnuInputException;
+import com.ceshiren.Exception.InputIdException;
+import com.ceshiren.Exception.InputSexException;
+import com.ceshiren.Exception.NotExistException;
 import com.ceshiren.utils.StringOperate;
+import com.ceshiren.enums.MenuEnum;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -13,28 +16,28 @@ import java.util.Scanner;
  * @create 2023/11/4 21:41
  */
 public class StudentSys {
-    public static void scannerStu(List<Student> students) throws MenuNumException, SnuInputException {
+    private final StudentManagement studentManagement;
 
+    public StudentSys(StudentManagement studentManagement) {
+        // 通过接口进行实现
+        this.studentManagement = studentManagement;
+    }
+    public void scannerStu(Map<Integer,Student> students){
         Scanner scanner = new Scanner(System.in);
-        String title = "--------欢迎来到学员信息管理系统--------\n";
-        String selectOne = "根据学号查看学员信息\n";
-        String selectTwo = "添加学员\n";
-        String selectThree = "根据学号删除学员后，查看所有学员信息\n";
-        String selectFour = "退出系统\n";
         StringOperate stringOperate = new StringOperate();
         boolean login = true;
         while (login) {
-            System.out.println(title + "1 " + selectOne + "2 " + selectTwo + "3 " + selectThree + "4 " + selectFour + "请输入你的选择:");
+            System.out.println(MenuEnum.getMenu());
             String select = scanner.nextLine();
-            switch (select) {
-                case "1":
-                    System.out.println(selectOne + "请输入要查找的学员编号:");
+            switch (Objects.requireNonNull(MenuEnum.getMenuBySelect(select))) {
+                case SHOW:
+                    System.out.println(MenuEnum.getMenuBySelect(select) + "请输入要查找的学员编号:");
                     select = scanner.nextLine();
                     if ("quit".equals(select) || "exit".equals(select)) {
                         break;
                     }
                     while (stringOperate.containsLetter(select) || select.isEmpty()) {
-                        System.out.println(selectOne + "请输入要查找的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
+                        System.out.println(MenuEnum.getMenuBySelect(select) + "请输入要查找的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
                         select = scanner.nextLine();
                         if ("quit".equals(select) || "exit".equals(select)) {
                             break;
@@ -44,48 +47,70 @@ public class StudentSys {
                         break;
                     }
                     System.out.println("查找的学员信息:");
-                    Optional student = StudentManagement.queryStudent(Integer.parseInt(select), students);
+                    Optional student = studentManagement.queryStudent(Integer.parseInt(select), students);
                     System.out.println(student);
                     break;
-                case "2":
-                    Student student1 = new Student();
-                    System.out.println(selectTwo + "请输入学员编号:");
+                case ADD:
+                    System.out.println(MenuEnum.getMenuBySelect(select) + "请输入学员编号:");
                     select = scanner.nextLine();
-                    if (stringOperate.containsLetter(select) || select.isEmpty()) {
-                        throw new SnuInputException("请输入要查找的正确的学员编号!");
+                    if ("quit".equals(select) || "exit".equals(select)) {
+                        break;
                     }
-                    student1.setSnu(Integer.parseInt(select));
+                    while (stringOperate.containsLetter(select) || select.isEmpty()) {
+                        System.out.println(MenuEnum.getMenuBySelect(select) + "请输入学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
+                        select = scanner.nextLine();
+                        if ("quit".equals(select) || "exit".equals(select)) {
+                            break;
+                        }
+                    }
+                    if ("quit".equals(select) || "exit".equals(select)) {
+                        break;
+                    }
+                    Integer num=Integer.parseInt(select);
                     System.out.println("请输入学员姓名:");
-                    select = scanner.nextLine();
-                    student1.setName(select);
+                    String name = scanner.nextLine();
                     System.out.println("请输入学员姓别:");
-                    select = scanner.nextLine();
-                    student1.setSex(select);
-                    students.add(StudentManagement.addStudent(student1.getSnu(), student1.getName(), student1.getSex()));
+                    String sex = scanner.nextLine();
+                    try {
+                        studentManagement.addStudent(num,name,sex);
+                    } catch (InputIdException e) {
+                        System.out.println("学员id已存在~请输入学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
+
+                    } catch (InputSexException e) {
+                        throw new RuntimeException(e);
+                    }
                     System.out.println("添加学员成功");
                     break;
-                case "3":
-                    System.out.println(selectThree + "请输入要删除的学员编号:");
+                case DELETE:
+                    System.out.println(MenuEnum.getMenuBySelect(select) + "请输入要删除的学员编号:");
                     select = scanner.nextLine();
-                    if (stringOperate.containsLetter(select) || select.isEmpty()) {
-                        throw new SnuInputException("请输入要删除的正确的学员编号!");
+                    if ("quit".equals(select) || "exit".equals(select)) {
+                        break;
                     }
-                    StudentManagement.deleteStudentBySnu(Integer.parseInt(select), students);
-                    System.out.println("删除后的学员信息");
-                    for (Student student2 : students) {
-                        System.out.println(StudentManagement.appendStu(student2));
+                    while (stringOperate.containsLetter(select) || select.isEmpty()) {
+                        System.out.println(MenuEnum.getMenuBySelect(select) + "请重新输入要删除的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
+                        select = scanner.nextLine();
+                        if ("quit".equals(select) || "exit".equals(select)) {
+                            break;
+                        }
+                    }
+                    if ("quit".equals(select) || "exit".equals(select)) {
+                        break;
+                    }
+                    try {
+                        studentManagement.deleteStudentBySnu(Integer.parseInt(select), students);
+                    } catch (NotExistException e) {
+                        System.out.println("系统不存在学员id信息~,请重新输入要删除的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
                     }
                     break;
-                case "4":
+                case EXIT:
                     scanner.close();
-                    System.out.println(selectFour);
+                    System.out.println(MenuEnum.getMenuBySelect(select));
                     login = false;
                     break;
                 default:
                     // 定义异常类Exception
-                    throw new MenuNumException("请输入正确的菜单项选择!");
-
-
+                    System.out.println("请输入正确的菜单项选择!");
             }
         }
     }
