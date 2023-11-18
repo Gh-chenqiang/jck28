@@ -21,24 +21,24 @@ public enum MenuEnum {
     }
     public String getPrompt(){return prompt;}
 
-    public static MenuEnum getMenuBySelect(String select){
+    /**
+     * 通过选项获取学员系统文案
+     * @param select
+     * @return
+     */
+    public static String getPromptBySelect(String select){
         for (MenuEnum menuEnum:values()) {
             if(select.equals(menuEnum.getSelect())){
-                return menuEnum;
+                return menuEnum.prompt;
             }
         }
         return null;
     }
 
-    public static MenuEnum getPromptBySelect(String select){
-        for (MenuEnum menuEnum:values()) {
-            if(select.equals(menuEnum.getPrompt())){
-                return menuEnum;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * 查询返回学员系统目录
+     * @return
+     */
     public static StringBuffer getMenu() {
         StringBuffer sb=new StringBuffer();
         for (MenuEnum menuEnum:values()

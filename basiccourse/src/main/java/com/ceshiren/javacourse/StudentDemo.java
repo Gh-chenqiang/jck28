@@ -33,7 +33,7 @@ public class StudentDemo {
         Integer sno3 =Integer.parseInt(studentManagement.generate());
         students.put(sno1,new Student(sno1,"张三", SexEnum.MAN));
         students.put(sno2,new Student(sno2,"莉丝", SexEnum.FEMALE));
-        students.put(sno3,new Student(sno3,"莉丝", SexEnum.MAN));
+        students.put(sno3,new Student(sno3,"王武", SexEnum.MAN));
         System.out.println("添加的学员信息:");
         students.forEach((key,value)-> System.out.println(value.appendStu(value)));
         studentManagement.deleteStudentByName("莉丝", students);

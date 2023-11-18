@@ -42,6 +42,11 @@ public class Student {
         this.sex = sex;
     }
 
+    /**
+     * 学员信息拼接
+     * @param student
+     * @return
+     */
     public StringBuffer appendStu(Student student){
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("学号: ")

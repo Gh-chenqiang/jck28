@@ -41,13 +41,22 @@ public class StudentManagementImpl implements StudentManagement {
     public void deleteStudentByName(String name, Map<Integer,Student> students) throws NotExistException {
         if (!students.isEmpty()) {
             System.out.println("删除后的学员信息");
-            students.forEach((key,value) -> {
+            Set<Map.Entry<Integer, Student>> set=students.entrySet();
+            Iterator<Map.Entry<Integer,Student>> iterator=set.iterator();
+            while(iterator.hasNext()){
+                Map.Entry<Integer,Student> entry=iterator.next();
+                if(entry.getValue().getName().contains(name)){
+                    iterator.remove();
+                    System.out.println(entry.getValue().appendStu(entry.getValue()));
+                }
+            }
+/*            students.forEach((key,value) -> {
                 if(name.equals(value.getName())){
                     students.remove(value.getSnu());
                     System.out.println(value.appendStu(value));
                 }
             }
-            );
+            );*/
         }else {
             throw new NotExistException("系统不存在学员信息，请录入学员信息~");
         }
