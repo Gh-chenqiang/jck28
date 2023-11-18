@@ -32,7 +32,7 @@ public interface StudentManagement {
      * @throws InputIdException
      * @throws InputSexException
      */
-    void addStudent(Integer snu, String name, String sex) throws InputIdException, InputSexException;
+    void addStudent(Integer snu, String name, String sex,Map<Integer,Student> students) throws InputIdException, InputSexException;
 
     /**
      * 根据学员名字删除学员

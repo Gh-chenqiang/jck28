@@ -36,15 +36,12 @@ public enum SexEnum {
         if (sex.isEmpty()){
             throw new InputSexException("性别不能为空~");
         }
-        switch (Objects.requireNonNull(SexEnum.getBySex(sex))){
-            case MAN:
-                sx=SexEnum.MAN;
-                break;
-            case FEMALE:
-                sx=SexEnum.FEMALE;
-                break;
-            default:
-                throw new InputSexException("请输入正确的性别");
+        if (MAN.equals(SexEnum.getBySex(sex))) {
+            sx = SexEnum.MAN;
+        }else if(FEMALE.equals(SexEnum.getBySex(sex))) {
+            sx = SexEnum.FEMALE;
+        }else {
+            throw new InputSexException("请输入正确的性别");
         }
         return sx;
     }
