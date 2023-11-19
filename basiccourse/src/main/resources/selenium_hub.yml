@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: selenium-hub-1208
+  Labels:
+    name: selenium-hub-1208
+spec:
+  replicas: 1
+  template:
+    metadata:
+      Labels:
+        name: selenium-hub-1208
+Spec:
+  containers:
+  - name: selenium-hub-1208
+    image: selenium/hub:3.7.1-beryllium
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 4444
+    env:
+      - name: GRID_TIMEOUT
+        value: "0"
+      - name: GRID_THROW_ON_CAPABILITY_NOT_PRESENT
+        value: "true"
+      - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+        value: "-1"
+      - name: GRID_BROWSER_TIMEOUT
+        value: "15000"
+      - name: GRID_TIMEOUT
+        value: "30000"
+      - name: GRID_CLEAN_UP_CYCLE
+        value: "30000"
+      - name: JAVA_OPTS
+        value: "-Xmx512m"
+      - name: GRID_MAX_SESSION
+        value: "30"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-hub-1208
+  labels:
+    name: selenium-hub-1208
+spec:
+  type: NodePort
+  ports:
+    - port: 4444
+      targetPort: 4444
+      name: port0
+      nodePort: 31208
+  selector:
+    name: selenium-hub-1208
+  sessionAffinity: None

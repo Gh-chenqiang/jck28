@@ -36,42 +36,42 @@ public class StudentSys {
                 case "1":
                     // 查找学员信息
                     System.out.println(getPromptBySelect(select) + "请输入要查找的学员编号:");
-                    select = scanner.nextLine();
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    String findNumber = scanner.nextLine();
+                    if ("quit".equals(findNumber) || "exit".equals(findNumber)) {
                         break;
                     }
-                    while (stringOperate.containsLetter(select) || select.isEmpty()) {
+                    while (stringOperate.containsLetter(findNumber) || findNumber.isEmpty()) {
                         System.out.println("请输入要查找的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
-                        select = scanner.nextLine();
-                        if ("quit".equals(select) || "exit".equals(select)) {
+                        findNumber = scanner.nextLine();
+                        if ("quit".equals(findNumber) || "exit".equals(findNumber)) {
                             break;
                         }
                     }
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    if ("quit".equals(findNumber) || "exit".equals(findNumber)) {
                         break;
                     }
                     System.out.println("查找的学员信息:");
-                    Optional student = studentManagement.queryStudent(Integer.parseInt(select), students);
+                    Optional student = studentManagement.queryStudent(Integer.parseInt(findNumber), students);
                     System.out.println(student);
                     break;
                 case "2":
                     // 添加学员信息
                     System.out.println(getPromptBySelect(select) + "请输入学员编号:");
-                    select = scanner.nextLine();
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    String addNumber = scanner.nextLine();
+                    if ("quit".equals(addNumber) || "exit".equals(addNumber)) {
                         break;
                     }
-                    while (stringOperate.containsLetter(select) || select.isEmpty()) {
+                    while (stringOperate.containsLetter(addNumber) || addNumber.isEmpty()) {
                         System.out.println("请输入学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
-                        select = scanner.nextLine();
-                        if ("quit".equals(select) || "exit".equals(select)) {
+                        addNumber = scanner.nextLine();
+                        if ("quit".equals(addNumber) || "exit".equals(addNumber)) {
                             break;
                         }
                     }
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    if ("quit".equals(addNumber) || "exit".equals(addNumber)) {
                         break;
                     }
-                    Integer num = Integer.parseInt(select);
+                    Integer num = Integer.parseInt(addNumber);
                     System.out.println("请输入学员姓名:");
                     String name = scanner.nextLine();
                     System.out.println("请输入学员姓别:");
@@ -88,22 +88,22 @@ public class StudentSys {
                 case "3":
                     // 根据学员编号删除学员信息
                     System.out.println(getPromptBySelect(select) + "请输入要删除的学员编号:");
-                    select = scanner.nextLine();
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    String delNumber = scanner.nextLine();
+                    if ("quit".equals(delNumber) || "exit".equals(delNumber)) {
                         break;
                     }
-                    while (stringOperate.containsLetter(select) || select.isEmpty()) {
+                    while (stringOperate.containsLetter(delNumber) || delNumber.isEmpty()) {
                         System.out.println("请重新输入要删除的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
-                        select = scanner.nextLine();
-                        if ("quit".equals(select) || "exit".equals(select)) {
+                        delNumber = scanner.nextLine();
+                        if ("quit".equals(delNumber) || "exit".equals(delNumber)) {
                             break;
                         }
                     }
-                    if ("quit".equals(select) || "exit".equals(select)) {
+                    if ("quit".equals(delNumber) || "exit".equals(delNumber)) {
                         break;
                     }
                     try {
-                        studentManagement.deleteStudentBySnu(Integer.parseInt(select), students);
+                        studentManagement.deleteStudentBySnu(Integer.parseInt(delNumber), students);
                     } catch (NotExistException e) {
                         System.out.println("系统不存在学员id信息~");
                     }

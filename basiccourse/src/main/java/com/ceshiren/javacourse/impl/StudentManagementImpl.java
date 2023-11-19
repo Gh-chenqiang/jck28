@@ -47,6 +47,7 @@ public class StudentManagementImpl implements StudentManagement {
                 Map.Entry<Integer, Student> entry = iterator.next();
                 if (entry.getValue().getName().contains(name)) {
                     iterator.remove();
+                }else {
                     System.out.println(entry.getValue().appendStu(entry.getValue()));
                 }
             }
@@ -68,6 +69,7 @@ public class StudentManagementImpl implements StudentManagement {
                 Map.Entry<Integer, Student> entry = iterator.next();
                 if (entry.getKey().equals(sno)) {
                     iterator.remove();
+                }else {
                     System.out.println(entry.getValue().appendStu(entry.getValue()));
                 }
             }
