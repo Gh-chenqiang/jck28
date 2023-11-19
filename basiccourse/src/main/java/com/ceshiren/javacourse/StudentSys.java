@@ -41,7 +41,7 @@ public class StudentSys {
                         break;
                     }
                     while (stringOperate.containsLetter(select) || select.isEmpty()) {
-                        System.out.println(getPromptBySelect(select) + "请输入要查找的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
+                        System.out.println("请输入要查找的学员编号(阿拉伯数字)或“quit” or “exit”返回菜单:");
                         select = scanner.nextLine();
                         if ("quit".equals(select) || "exit".equals(select)) {
                             break;
