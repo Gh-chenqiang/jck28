@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-node-parson
+  labels:
+    name: selenium-node-parson
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: selenium-node-parson
+  template:
+    metadata:
+      labels:
+        name: selenium-node-parson
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: selenium-node-chrome
+      containers:
+        - name: selenium-node-chrome-parson
+          image: selenium/node-chrome-:4.0.0-rc-2-prerelease-20210923
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5900
+            - containerPort: 5553
+          env:
+            - name: SE_EVENT_BUS_HOST
+              value: "selenium-hub"
+            - name: SE_EVENT_BUS_PUBLISH_PORT
+              value: "4442"
+            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+              value: "4443"
+            - name: NODE_MAX_SESSION
+              value: "20"
+            - name: SE_NODE_OVERRIDE_MAX_SESSIONS
+              value: "true"
+            - name: NODE_MAX_INSTANCES
+              value: "60"
+            - name: TZ
+              value: "Asia/Shanghai"
+          resources:
+            requests:
+              memory: "500Mi"
+          volumeMounts:
+            - mountPath: "/dev/shm"
+              name: "dshm"
+            - mountPath: /home/seluser/Downloads
+              name: chromedownload
+            - mountPath: "/etc/localtime"
+              name: "host-time"
+      nodeSelector:
+        uiauto-node: "true"
+      volumes:
+        - name: "dshm"
+          hostPath:
+            path: "/dev/shm"
+        - name: "host-time"
+          hostPath:
+            path: "/etc/localtime"
+        - hostPath:
+            path: /data/ti-platform-fs/ti-qta/chromedownload
+            type: DirectoryOrCreate
+          name: chromedownload
+#      imagePullSecrets:
+#        - name: reg-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-node-parson
+  labels:
+    name: selenium-node-parson
+spec:
+  type: NodePort
+  ports:
+    - port: 5900
+      targetPort: 5900
+      name: port0
+      nodePort: 31002
+  selector:
+    name: selenium-node-parson
+  sessionAffinity: None

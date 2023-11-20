@@ -1,53 +1,68 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: selenium-hub-1208
-  Labels:
-    name: selenium-hub-1208
+  name: selenium-hub
+  labels:
+    name: selenium-hub
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: selenium-hub
   template:
     metadata:
-      Labels:
-        name: selenium-hub-1208
-Spec:
-  containers:
-  - name: selenium-hub-1208
-    image: selenium/hub:3.7.1-beryllium
-    imagePullPolicy: IfNotPresent
-    ports:
-      - containerPort: 4444
-    env:
-      - name: GRID_TIMEOUT
-        value: "0"
-      - name: GRID_THROW_ON_CAPABILITY_NOT_PRESENT
-        value: "true"
-      - name: GRID_NEW_SESSION_WAIT_TIMEOUT
-        value: "-1"
-      - name: GRID_BROWSER_TIMEOUT
-        value: "15000"
-      - name: GRID_TIMEOUT
-        value: "30000"
-      - name: GRID_CLEAN_UP_CYCLE
-        value: "30000"
-      - name: JAVA_OPTS
-        value: "-Xmx512m"
-      - name: GRID_MAX_SESSION
-        value: "30"
+      labels:
+        name: selenium-hub
+    spec:
+      containers:
+        - name: selenium-hub
+          image: selenium/hub:4.1.1-20220121
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4444
+            - containerPort: 4443
+            - containerPort: 4442
+            - containerPort: 5557
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+          volumeMounts:
+            - mountPath: "/etc/localtime"
+              name: "host-time"
+      nodeSelector:
+        uiauto-node: "true"
+      volumes:
+        - name: "host-time"
+          hostPath:
+            path: "/etc/localtime"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: selenium-hub-1208
+  name: selenium-hub
   labels:
-    name: selenium-hub-1208
+    name: selenium-hub
 spec:
   type: NodePort
   ports:
-    - port: 4444
+    - name: port1
+      protocol: TCP
+      port: 4442
+      targetPort: 4442
+    - name: port2
+      protocol: TCP
+      port: 4443
+      targetPort: 4443
+    - name: port3
+      protocol: TCP
+      port: 5557
+      targetPort: 5557
+    - name: port0
       targetPort: 4444
-      name: port0
-      nodePort: 31208
+      port: 4444
+      nodePort: 32757
   selector:
-    name: selenium-hub-1208
+    name: selenium-hub
   sessionAffinity: None
+
