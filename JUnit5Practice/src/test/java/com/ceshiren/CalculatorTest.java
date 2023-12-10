@@ -29,6 +29,7 @@ class CalculatorTest {
 
     @AfterEach
     void destroyId() {
+        //释放资源
         calculator.destroyId();
     }
 
@@ -37,21 +38,25 @@ class CalculatorTest {
     void sum() {
 
         assertAll("加法计算结果校验",
+                //正常流程计算成功。
                 () -> {
                     assertEquals(10, calculator.sum(-99, -98, -40, 0, 50, 98, 99));
                 },
+                //输入整数<-99,超出计算范围
                 () -> {
                     assertEquals("请输入范围内的整数！", Assertions.assertThrows(
                             IllegalArgumentException.class, () -> {
                                 calculator.sum(-100, 0);
                             }).getMessage());
                 },
+                //输入整数>99,超出计算范围
                 () -> {
                     assertEquals("请输入范围内的整数！", Assertions.assertThrows(
                             IllegalArgumentException.class, () -> {
                                 calculator.sum(101, 2);
                             }).getMessage());
                 },
+                //输入整数=100,超出计算范围，特判逻辑
                 () -> {
                     assertEquals("integer is 100！", Assertions.assertThrows(
                             NumberFormatException.class, () -> {
