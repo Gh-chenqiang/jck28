@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <!-- 控制台输出 CONSOLE -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 输入到日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- 定义日志文件的存储地址 -->
+        <!-- 不要使用相对路径 -->
+        <file>/Users/chenqiang/logs/test.log</file>
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-6level %logger{50} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 日志输出级别 -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>

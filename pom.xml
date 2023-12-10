@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>basiccourse</module>
+        <module>JUnit5Practice</module>
     </modules>
 
     <properties>
