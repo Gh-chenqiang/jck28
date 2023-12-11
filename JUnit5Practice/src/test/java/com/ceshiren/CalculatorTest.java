@@ -1,6 +1,15 @@
 package com.ceshiren;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,36 +42,43 @@ class CalculatorTest {
         calculator.destroyId();
     }
 
-    @Test
+    @ParameterizedTest
     @Order(1)
-    void sum() {
+    @Tag("sum求和")
+    @DisplayName("加法运算及结果校验")
+    @MethodSource()
+    void sumTest(SumList sumList) {
+           assertAll("加法运算及结果校验",
+                    //正常流程计算成功。
+                    () -> {
+                        if(sumList.getTestCaseName().contains("正常流程")) {
+                            assertEquals(Integer.parseInt(sumList.getExpect()), calculator.sum(sumList.getAddNumA(), sumList.getAddNumB()));
+                        }
+                    },
 
-        assertAll("加法计算结果校验",
-                //正常流程计算成功。
-                () -> {
-                    assertEquals(10, calculator.sum(-99, -98, -40, 0, 50, 98, 99));
-                },
-                //输入整数<-99,超出计算范围
-                () -> {
-                    assertEquals("请输入范围内的整数！", Assertions.assertThrows(
-                            IllegalArgumentException.class, () -> {
-                                calculator.sum(-100, 0);
-                            }).getMessage());
-                },
-                //输入整数>99,超出计算范围
-                () -> {
-                    assertEquals("请输入范围内的整数！", Assertions.assertThrows(
-                            IllegalArgumentException.class, () -> {
-                                calculator.sum(101, 2);
-                            }).getMessage());
-                },
-                //输入整数=100,超出计算范围，特判逻辑
-                () -> {
-                    assertEquals("integer is 100！", Assertions.assertThrows(
-                            NumberFormatException.class, () -> {
-                                calculator.sum(100, 1);
-                            }).getMessage());
-                }
-        );
+                   //异常流程计算失败
+                   () -> {
+                       if (sumList.getTestCaseName().contains("异常流程")){
+                           assertEquals(sumList.getExpect(), Assertions.assertThrows(
+                                   IllegalArgumentException.class, () -> {
+                                       calculator.sum(sumList.getAddNumA(), sumList.getAddNumB());
+                                   }).getMessage());
+
+                       }
+                   }
+            );
     }
+
+    // csv文件数据驱动，读取csv文件数据
+    static List<SumList> sumTest() throws IOException {
+        CsvMapper csvMapper = new CsvMapper();
+        // 带着header 读取
+        CsvSchema sumListSchema = CsvSchema.emptySchema().withHeader();
+        //csvMapper.findAndRegisterModules();
+        MappingIterator<SumList> sumList = csvMapper.readerFor(SumList.class)
+                .with(sumListSchema)
+                .readValues(new File("src/test/resources/calculator_sum.csv"));
+        return sumList.readAll();
+    }
+
 }
