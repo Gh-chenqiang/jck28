@@ -1,0 +1,37 @@
+- numbers:
+    - 99
+    - -99
+    - 44
+  expect: 14.67
+
+- numbers:
+    - -100
+    - -90
+    - 42
+  expect: -49.33
+
+- numbers:
+    - 100
+    - -90
+    - 42
+  expect: 17.33
+
+- numbers:
+    - 100
+    - -100
+    - 40
+    - -10
+  expect: 7.50
+
+- numbers:
+    - -100
+    - -200
+    - -300
+  expect: 0
+
+- numbers:
+    - 100
+    - 101
+    - 120
+  expect: 0
+

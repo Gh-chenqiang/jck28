@@ -1,0 +1,20 @@
+- testCaseName: "正常流程: -99<number<99"
+  numbers:
+    - -99
+    - 0
+    - 99
+  expect: 0
+
+- testCaseName: "异常流程: number<-99"
+  numbers:
+    - -100
+    - 0
+    - 99
+  expect: "请输入范围内的整数！"
+
+- testCaseName: "异常流程: number>99"
+  numbers:
+    - 100
+    - 0
+    - -99
+  expect: "请输入范围内的整数！"

@@ -1,0 +1,18 @@
+- words:
+    - 98
+    - -90
+    - 40
+  expect: "98 -90 40"
+
+- words:
+    - "word1"
+    - "word2"
+    - "word3"
+  expect: "word1 word2 word3"
+
+- words:
+    - "word"
+    - "String"
+    - 40
+    - -90
+  expect: "word String 40 -90"
