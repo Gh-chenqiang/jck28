@@ -1,8 +1,6 @@
 package com.ceshiren;
 
 import com.ceshiren.entityClass.*;
-import com.ceshiren.impl.DataUnitFactoryImpl;
-import com.ceshiren.mapper.EntityFileMapping;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,15 +16,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class CalculatorTest {
 
     private static Calculator calculator;
-    private static DataUnitFactory dataUnitFactory;
 
     @BeforeAll
-    static void setCalculator() {
+    static void setCalculator() throws IOException {
         // 实例化 计算器
         calculator = new Calculator("初始化计算器");
-        // 实例化 数据驱动工厂
-        dataUnitFactory = new DataUnitFactoryImpl();
+
         //todo 连接数据库获取数据
+        /**
+         * // 添加测试数据准备，通过硬编码实现，实际使用从数据库中读取
+         * List<SumEntity> addEntities = new ArrayList<>();
+         * // 测试数据写入yaml文件
+         * dataUnitFactory.dumpYamlData(EntityFileMapping.SUM_ENTITY, addEntities);
+         */
     }
 
     @BeforeEach
@@ -49,7 +50,7 @@ class CalculatorTest {
     }
 
     @ParameterizedTest
-    @MethodSource()
+    @MethodSource("com.ceshiren.utils.TestDataFactory#getSumTestData")
     @DisplayName("求和计算")
     @Description("连续加法计算及结果校验测试")
     @Order(1)
@@ -74,13 +75,8 @@ class CalculatorTest {
         );
     }
 
-    static List<SumEntity> sumTest() throws IOException {
-        return dataUnitFactory.YamlUnitFactory(EntityFileMapping.SUM_ENTITY);
-    }
-
-
     @ParameterizedTest
-    @MethodSource("from100SubtractTest")
+    @MethodSource("com.ceshiren.utils.TestDataFactory#getFrom100SubTestData")
     @DisplayName("从100进行减法计算")
     @Description("从100进行减法计算及结果校验测试")
     @Order(2)
@@ -104,12 +100,8 @@ class CalculatorTest {
         );
     }
 
-    static List<SumEntity> from100SubtractTest() throws IOException {
-        return dataUnitFactory.YamlUnitFactory(EntityFileMapping.FROM_100_SUB_ENTITY);
-    }
-
     @ParameterizedTest
-    @MethodSource("subtractTest")
+    @MethodSource("com.ceshiren.utils.TestDataFactory#getTwoNumSubTestData")
     @DisplayName("两数减法计算")
     @Description("两数做减法计算及结果校验测试")
     @Order(3)
@@ -123,12 +115,8 @@ class CalculatorTest {
 
     }
 
-    static List<TwoNumSubEntity> subtractTest() throws IOException {
-        return dataUnitFactory.YamlUnitFactory(EntityFileMapping.TWO_NUM_SUB_ENTITY);
-    }
-
     @ParameterizedTest
-    @MethodSource("averageTest")
+    @MethodSource("com.ceshiren.utils.TestDataFactory#getAverageTestData")
     @DisplayName("求平均值")
     @Description("求平均值计算及结果校验测试")
     @Order(4)
@@ -148,12 +136,8 @@ class CalculatorTest {
         );
     }
 
-    static List<AverageEntity> averageTest() throws IOException {
-        return dataUnitFactory.YamlUnitFactory(EntityFileMapping.AVERAGE_ENTITY);
-    }
-
     @ParameterizedTest
-    @MethodSource()
+    @MethodSource("com.ceshiren.utils.TestDataFactory#getConcatStrTestData")
     @DisplayName("字符串连续拼接")
     @Description("字符串连续拼接操作测试")
     @Order(5)
@@ -164,7 +148,4 @@ class CalculatorTest {
         );
     }
 
-    static List<ConcatStrEntity> concatStrTest() throws IOException {
-        return dataUnitFactory.YamlUnitFactory(EntityFileMapping.CONCAT_STR_ENTITY);
-    }
 }
