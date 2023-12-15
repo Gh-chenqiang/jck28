@@ -1,18 +1,20 @@
 package com.ceshiren;
 
 import com.ceshiren.entityClass.*;
+import com.ceshiren.utils.TestDataFactory;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("计算器运算测试")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CalculatorTest {
 
     private static Calculator calculator;
@@ -49,103 +51,148 @@ class CalculatorTest {
         calculator.destroyId();
     }
 
-    @ParameterizedTest
-    @MethodSource("com.ceshiren.utils.TestDataFactory#getSumTestData")
-    @DisplayName("求和计算")
+    // 加法求和计算动态测试
+    @TestFactory
+    @DisplayName("加法求和计算动态测试")
     @Description("连续加法计算及结果校验测试")
     @Order(1)
-    void sumTest(SumEntity sumEntity) {
-
-        assertAll("加法计算结果校验",
-                () -> {
-                    //正常流程计算成功。
-                    if (sumEntity.getTestCaseName().contains("正常流程")) {
-                        assertEquals(Integer.valueOf(sumEntity.getExpect()), calculator.sum(sumEntity.getNumbers()));
-                    }
-                },
-                () -> {
+    Iterable<DynamicTest> sumTestIterable() throws IOException {
+        //参数化，引入yaml文件数据驱动
+        List<SumEntity> sumTestData = TestDataFactory.getSumTestData();
+        // 创建迭代器
+        Iterator<SumEntity> iterator = sumTestData.iterator();
+        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        DynamicTest dynamicTest;
+        while (iterator.hasNext()){
+            SumEntity next = iterator.next();
+            if(Arrays.stream(next.getNumbers()).anyMatch(u -> u<-99)
+                    |Arrays.stream(next.getNumbers()).anyMatch(u-> u >99)) {
+                dynamicTest = DynamicTest.dynamicTest("求和计算: 超出计算范围", () -> {
+                    //allure测试报告显示每一个测试用例的参数
+                    Allure.step(next.toString());
                     //输入整数<-99|输入整数>99,超出计算范围
-                    if (sumEntity.getTestCaseName().contains("异常流程")) {
-                        assertEquals(sumEntity.getExpect(), Assertions.assertThrows(
-                                IllegalArgumentException.class, () -> {
-                                    calculator.sum(sumEntity.getNumbers());
-                                }).getMessage());
-                    }
-                }
-        );
+                    assertEquals(next.getExpect(), Assertions.assertThrows(
+                            IllegalArgumentException.class, () -> {
+                                calculator.sum(next.getNumbers());
+                            }).getMessage());
+                });
+            }else {
+            dynamicTest = DynamicTest.dynamicTest("求和计算：计算正确", () -> {
+                Allure.step(next.toString());
+                //正常流程计算成功。
+                assertEquals(Integer.valueOf(next.getExpect()), calculator.sum(next.getNumbers()));
+            });}
+            dynamicTests.add(dynamicTest);
+        }
+        return dynamicTests;
     }
 
-    @ParameterizedTest
-    @MethodSource("com.ceshiren.utils.TestDataFactory#getFrom100SubTestData")
+    // 加法求和计算动态测试
+    @TestFactory
     @DisplayName("从100进行减法计算")
     @Description("从100进行减法计算及结果校验测试")
     @Order(2)
-    void from100SubtractTest(From100SubEntity subEntity) {
-        assertAll("从100进行减法",
-                () -> {
-                    //正常流程计算成功。
-                    if (subEntity.getTestCaseName().contains("正常流程")) {
-                        assertEquals(Integer.valueOf(subEntity.getExpect()), calculator.subtract(subEntity.getNumbers()));
-                    }
-                },
-                () -> {
+    Iterable<DynamicTest> from100SubtractTest() throws IOException {
+        //参数化，引入yaml文件数据驱动
+        List<From100SubEntity> sumTestData = TestDataFactory.getFrom100SubTestData();
+        // 创建迭代器
+        Iterator<From100SubEntity> iterator = sumTestData.iterator();
+        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        DynamicTest dynamicTest;
+        while (iterator.hasNext()){
+            From100SubEntity next = iterator.next();
+            if(Arrays.stream(next.getNumbers()).allMatch(u -> u<-99)
+                    |Arrays.stream(next.getNumbers()).allMatch(u -> u>99)) {
+                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算: 超出计算范围", () -> {
+                    //allure测试报告显示每一个测试用例的参数
+                    Allure.step(next.toString());
                     //输入整数<-99|输入整数>99,超出计算范围
-                    if (subEntity.getTestCaseName().contains("异常流程")) {
-                        assertEquals(subEntity.getExpect(), assertThrows(
-                                IllegalArgumentException.class, () -> {
-                                    calculator.subtract(subEntity.getNumbers());
-                                }).getMessage());
-                    }
-                }
-        );
+                    assertEquals(next.getExpect(), Assertions.assertThrows(
+                            IllegalArgumentException.class, () -> {
+                                calculator.subtract(next.getNumbers());
+                            }).getMessage());
+                });
+            }else {
+                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算：计算正确", () -> {
+                    Allure.step(next.toString());
+                    //正常流程计算成功。
+                    assertEquals(Integer.valueOf(next.getExpect()), calculator.subtract(next.getNumbers()));
+                });}
+            dynamicTests.add(dynamicTest);
+        }
+        return dynamicTests;
     }
 
-    @ParameterizedTest
-    @MethodSource("com.ceshiren.utils.TestDataFactory#getTwoNumSubTestData")
+    // 两数计算动态测试
+    @TestFactory
     @DisplayName("两数减法计算")
     @Description("两数做减法计算及结果校验测试")
     @Order(3)
-    void subtractTest(TwoNumSubEntity subEntity) {
-        assertAll("两数做减法计算",
-                () -> {
-                    //正常流程计算成功。
-                    assertEquals(Integer.valueOf(subEntity.getExpect()), calculator.subtract(subEntity.getX(), subEntity.getY()));
-                }
-        );
-
+    Iterable<DynamicTest> subtractTest() throws IOException {
+        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        //参数化，引入yaml文件数据驱动
+        List<TwoNumSubEntity> sumTestData = TestDataFactory.getTwoNumSubTestData();
+        // 创建迭代器
+        for (TwoNumSubEntity next : sumTestData) {
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("减法运算", () -> {
+                // allure测试报告显示每一个测试用例的参数
+                Allure.step(next.toString());
+                // 正常流程计算成功。
+                assertEquals(Integer.valueOf(next.getExpect()), calculator.subtract(next.getX(), next.getY()));
+            });
+            dynamicTests.add(dynamicTest);
+        }
+        return dynamicTests;
     }
 
-    @ParameterizedTest
-    @MethodSource("com.ceshiren.utils.TestDataFactory#getAverageTestData")
-    @DisplayName("求平均值")
+    @TestFactory
+    @DisplayName("求平均值运算")
     @Description("求平均值计算及结果校验测试")
     @Order(4)
-    void averageTest(AverageEntity averageEntity) {
-        // 期望结果转BigDecimal类型，并保留两位小数
-        BigDecimal avgExpect = new BigDecimal(averageEntity.getExpect());
-        BigDecimal finalAvgExpect = avgExpect.setScale(2, RoundingMode.HALF_UP);
-        //求实际平均值
-        double averageActual = calculator.average(averageEntity.getNumbers());
-        // 实际平均值转BigDecimal 以四舍五入保留两位小数
-        BigDecimal avgActual = new BigDecimal(averageActual);
-        BigDecimal finalAvgActual = avgActual.setScale(2, RoundingMode.HALF_UP);
-        assertAll("两数做减法计算",
-                () -> {
-                    assertEquals(finalAvgExpect, finalAvgActual);
-                }
-        );
+    Iterable<DynamicTest> averageTest() throws IOException {
+        Collection<DynamicTest> dynamicTests=new ArrayList<>();
+        List<AverageEntity> averageTestData = TestDataFactory.getAverageTestData();
+        for (AverageEntity next : averageTestData) {
+            Allure.step(next.toString());
+            // 期望结果转 BigDecimal 类型，并保留两位小数
+            BigDecimal avgExpect = new BigDecimal(next.getExpect());
+            BigDecimal finalAvgExpect = avgExpect.setScale(2, RoundingMode.HALF_UP);
+            // 求实际平均值
+            double averageActual = calculator.average(next.getNumbers());
+            // 实际平均值转BigDecimal,并以四舍五入保留两位小数
+            BigDecimal avgActual = new BigDecimal(averageActual);
+            BigDecimal finalAvgActual = avgActual.setScale(2, RoundingMode.HALF_UP);
+            // 计算结果校验
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("求平均值计算", () -> {
+                //添加allure测试报告步骤展示参数
+                Allure.step(next.toString());
+                assertEquals(finalAvgExpect, finalAvgActual);
+            });
+            dynamicTests.add(dynamicTest);
+        }
+        return dynamicTests;
     }
 
-    @ParameterizedTest
-    @MethodSource("com.ceshiren.utils.TestDataFactory#getConcatStrTestData")
+    @TestFactory
     @DisplayName("字符串连续拼接")
-    @Description("字符串连续拼接操作测试")
+    @Description("字符串连续拼接测试")
     @Order(5)
-    void concatStrTest(ConcatStrEntity concatStrEntity) {
-        assertAll("字符串拼接", () -> {
-                    assertEquals(concatStrEntity.getExpect(), calculator.concatStr(concatStrEntity.getWords()));
-                }
-        );
+    Iterable<DynamicTest> concatStrTest() throws IOException {
+        // 实例化返回对象类型: Collection集合
+        Collection<DynamicTest> dynamicTests=new ArrayList<>();
+        // 参数化，引入yaml文件数据驱动
+        List<ConcatStrEntity> concatStrTestData = TestDataFactory.getConcatStrTestData();
+        // 创建一个iterator迭代器
+        for (ConcatStrEntity concatStrEntity : concatStrTestData) {
+            //获取下一个参数实例
+            // 添加allure步骤请求参数
+            Allure.step(concatStrEntity.toString());
+            // 动态测试用例实现
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("字符串连续拼接测试校验", () -> {
+                assertEquals(concatStrEntity.getExpect(), calculator.concatStr(concatStrEntity.getWords()));
+            });
+            dynamicTests.add(dynamicTest);
+        }
+        return dynamicTests;
     }
-
 }

@@ -3,6 +3,7 @@ package com.ceshiren.entityClass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 从100进行减法参数实体类
@@ -10,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 public class From100SubEntity {
-    private String testCaseName;
     private int[] numbers;
     private String expect;
 }

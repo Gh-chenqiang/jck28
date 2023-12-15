@@ -1,27 +1,23 @@
-- testCaseName: "正常流程: -99<number<99"
-  numbers:
+- numbers:
     - 98
     - -90
     - 30
   expect: 62
 
-- testCaseName: "正常流程: 同时存在numbers<-99,numbers>99"
-  numbers:
+- numbers:
     - -100
     - -200
     - 100
     - 200
   expect: 100
 
-- testCaseName: "异常流程: numbers>99"
-  numbers:
+- numbers:
     - 100
     - 200
     - 300
   expect: "请输入范围内的整数！"
 
-- testCaseName: "异常流程: numbers<-99"
-  numbers:
+- numbers:
     - -100
     - -200
     - -300
