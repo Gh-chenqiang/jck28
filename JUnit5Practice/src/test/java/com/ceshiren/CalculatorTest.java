@@ -61,13 +61,13 @@ class CalculatorTest {
         List<SumEntity> sumTestData = TestDataFactory.getSumTestData();
         // 创建迭代器
         Iterator<SumEntity> iterator = sumTestData.iterator();
-        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
         DynamicTest dynamicTest;
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             SumEntity next = iterator.next();
-            if(Arrays.stream(next.getNumbers()).anyMatch(u -> u<-99)
-                    |Arrays.stream(next.getNumbers()).anyMatch(u-> u >99)) {
-                dynamicTest = DynamicTest.dynamicTest("求和计算: 超出计算范围", () -> {
+            if (Arrays.stream(next.getNumbers()).anyMatch(u -> u < -99)
+                    | Arrays.stream(next.getNumbers()).anyMatch(u -> u > 99)) {
+                dynamicTest = DynamicTest.dynamicTest("求和计算: 超出计算范围 " + (sumTestData.indexOf(next) + 1), () -> {
                     //allure测试报告显示每一个测试用例的参数
                     Allure.step(next.toString());
                     //输入整数<-99|输入整数>99,超出计算范围
@@ -76,18 +76,19 @@ class CalculatorTest {
                                 calculator.sum(next.getNumbers());
                             }).getMessage());
                 });
-            }else {
-            dynamicTest = DynamicTest.dynamicTest("求和计算：计算正确", () -> {
-                Allure.step(next.toString());
-                //正常流程计算成功。
-                assertEquals(Integer.valueOf(next.getExpect()), calculator.sum(next.getNumbers()));
-            });}
+            } else {
+                dynamicTest = DynamicTest.dynamicTest("求和计算：计算正确 " + (sumTestData.indexOf(next) + 1), () -> {
+                    Allure.step(next.toString());
+                    //正常流程计算成功。
+                    assertEquals(Integer.valueOf(next.getExpect()), calculator.sum(next.getNumbers()));
+                });
+            }
             dynamicTests.add(dynamicTest);
         }
         return dynamicTests;
     }
 
-    // 加法求和计算动态测试
+    // 从100进行减法运算动态测试
     @TestFactory
     @DisplayName("从100进行减法计算")
     @Description("从100进行减法计算及结果校验测试")
@@ -97,13 +98,13 @@ class CalculatorTest {
         List<From100SubEntity> sumTestData = TestDataFactory.getFrom100SubTestData();
         // 创建迭代器
         Iterator<From100SubEntity> iterator = sumTestData.iterator();
-        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
         DynamicTest dynamicTest;
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             From100SubEntity next = iterator.next();
-            if(Arrays.stream(next.getNumbers()).allMatch(u -> u<-99)
-                    |Arrays.stream(next.getNumbers()).allMatch(u -> u>99)) {
-                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算: 超出计算范围", () -> {
+            if (Arrays.stream(next.getNumbers()).allMatch(u -> u < -99)
+                    | Arrays.stream(next.getNumbers()).allMatch(u -> u > 99)) {
+                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算: 超出计算范围 " + (sumTestData.indexOf(next) + 1), () -> {
                     //allure测试报告显示每一个测试用例的参数
                     Allure.step(next.toString());
                     //输入整数<-99|输入整数>99,超出计算范围
@@ -112,12 +113,13 @@ class CalculatorTest {
                                 calculator.subtract(next.getNumbers());
                             }).getMessage());
                 });
-            }else {
-                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算：计算正确", () -> {
+            } else {
+                dynamicTest = DynamicTest.dynamicTest("从100进行减法计算：计算正确 " + (sumTestData.indexOf(next) + 1), () -> {
                     Allure.step(next.toString());
                     //正常流程计算成功。
                     assertEquals(Integer.valueOf(next.getExpect()), calculator.subtract(next.getNumbers()));
-                });}
+                });
+            }
             dynamicTests.add(dynamicTest);
         }
         return dynamicTests;
@@ -129,12 +131,12 @@ class CalculatorTest {
     @Description("两数做减法计算及结果校验测试")
     @Order(3)
     Iterable<DynamicTest> subtractTest() throws IOException {
-        Collection<DynamicTest> dynamicTests =new ArrayList<>();
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
         //参数化，引入yaml文件数据驱动
-        List<TwoNumSubEntity> sumTestData = TestDataFactory.getTwoNumSubTestData();
+        List<TwoNumSubEntity> twoNumSubTestData = TestDataFactory.getTwoNumSubTestData();
         // 创建迭代器
-        for (TwoNumSubEntity next : sumTestData) {
-            DynamicTest dynamicTest = DynamicTest.dynamicTest("减法运算", () -> {
+        for (TwoNumSubEntity next : twoNumSubTestData) {
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("减法运算 " + (twoNumSubTestData.indexOf(next) + 1), () -> {
                 // allure测试报告显示每一个测试用例的参数
                 Allure.step(next.toString());
                 // 正常流程计算成功。
@@ -145,12 +147,13 @@ class CalculatorTest {
         return dynamicTests;
     }
 
+    // 求平均值运算动态测试
     @TestFactory
     @DisplayName("求平均值运算")
     @Description("求平均值计算及结果校验测试")
     @Order(4)
     Iterable<DynamicTest> averageTest() throws IOException {
-        Collection<DynamicTest> dynamicTests=new ArrayList<>();
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
         List<AverageEntity> averageTestData = TestDataFactory.getAverageTestData();
         for (AverageEntity next : averageTestData) {
             Allure.step(next.toString());
@@ -163,7 +166,7 @@ class CalculatorTest {
             BigDecimal avgActual = new BigDecimal(averageActual);
             BigDecimal finalAvgActual = avgActual.setScale(2, RoundingMode.HALF_UP);
             // 计算结果校验
-            DynamicTest dynamicTest = DynamicTest.dynamicTest("求平均值计算", () -> {
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("求平均值计算 " + (averageTestData.indexOf(next) + 1), () -> {
                 //添加allure测试报告步骤展示参数
                 Allure.step(next.toString());
                 assertEquals(finalAvgExpect, finalAvgActual);
@@ -173,13 +176,14 @@ class CalculatorTest {
         return dynamicTests;
     }
 
+    //字符串连续拼接动态测试
     @TestFactory
     @DisplayName("字符串连续拼接")
     @Description("字符串连续拼接测试")
     @Order(5)
     Iterable<DynamicTest> concatStrTest() throws IOException {
         // 实例化返回对象类型: Collection集合
-        Collection<DynamicTest> dynamicTests=new ArrayList<>();
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
         // 参数化，引入yaml文件数据驱动
         List<ConcatStrEntity> concatStrTestData = TestDataFactory.getConcatStrTestData();
         // 创建一个iterator迭代器
@@ -188,7 +192,8 @@ class CalculatorTest {
             // 添加allure步骤请求参数
             Allure.step(concatStrEntity.toString());
             // 动态测试用例实现
-            DynamicTest dynamicTest = DynamicTest.dynamicTest("字符串连续拼接测试校验", () -> {
+            DynamicTest dynamicTest = DynamicTest.dynamicTest("字符串连续拼接测试校验 " + (concatStrTestData.indexOf(concatStrEntity) + 1), () -> {
+                Allure.step(concatStrEntity.toString());
                 assertEquals(concatStrEntity.getExpect(), calculator.concatStr(concatStrEntity.getWords()));
             });
             dynamicTests.add(dynamicTest);
