@@ -1,9 +1,6 @@
 package com.ceshiren.entityClass;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  *求和加数参数实体类
@@ -11,7 +8,7 @@ import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
 @ToString
 public class SumEntity {
     private int[] numbers;

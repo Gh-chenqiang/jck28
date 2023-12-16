@@ -1,7 +1,12 @@
 package com.ceshiren;
 
 import com.ceshiren.entityClass.*;
+import com.ceshiren.mapper.EntityFileMapping;
+import com.ceshiren.utils.DataUnitFactory;
+import com.ceshiren.utils.SqlJdbcUnitFactory;
 import com.ceshiren.utils.TestDataFactory;
+import com.ceshiren.utils.impl.DataUnitFactoryImpl;
+import com.ceshiren.utils.impl.SqlJdbcUnitImpl;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
@@ -18,12 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class CalculatorTest {
 
     private static Calculator calculator;
+    private static SqlJdbcUnitFactory sqlJdbcUnitFactory;
+    private static DataUnitFactory dataUnitFactory;
 
     @BeforeAll
     static void setCalculator() throws IOException {
         // 实例化 计算器
         calculator = new Calculator("初始化计算器");
-
         //todo 连接数据库获取数据
         /**
          * // 添加测试数据准备，通过硬编码实现，实际使用从数据库中读取
@@ -31,6 +37,12 @@ class CalculatorTest {
          * // 测试数据写入yaml文件
          * dataUnitFactory.dumpYamlData(EntityFileMapping.SUM_ENTITY, addEntities);
          */
+        /*sqlJdbcUnitFactory=new SqlJdbcUnitImpl();
+        final String sumSql="select adds.numbers,adds.expect from `junit5_data`.`add_numbers` adds where adds.id between ? and ?;";
+        List<Integer> whereList = Arrays.asList(1,100);
+        List<Map> maps = sqlJdbcUnitFactory.MysqlJdbcConnect(sumSql, whereList);
+        dataUnitFactory =new DataUnitFactoryImpl();
+        dataUnitFactory.dumpYamlData(EntityFileMapping.SUM_ENTITY,maps);*/
     }
 
     @BeforeEach
