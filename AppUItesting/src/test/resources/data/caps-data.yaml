@@ -1,0 +1,8 @@
+- platformName: "Android"
+  platformVersion: "13"
+  udid: "192.168.3.66:43421"
+  automationName: "Uiautomator2"
+  appPackage: "com.tencent.wework"
+  appActivity: ".launch.LaunchSplashActivity"
+  noReset: true
+  bundleId: "1111"
