@@ -47,49 +47,27 @@ public class WeiXinAddMemberTest {
     @Order(1)
     void addMemberTest() {
         //定位通讯录并进入页面
-        WebElement contactEle = driver.findElement(AppiumBy.xpath("//android.widget.TextView[@text=\"通讯录\"]"));
-        if (!contactEle.isEnabled()) {
-            System.out.println("元素不可用: " + contactEle.getText());
-            return;
-        }
-        contactEle.click();
+        driver.findElement(AppiumBy.xpath("//android.widget.TextView[@text=\"通讯录\"]")).click();
+
         //定位添加成员按钮并进入添加页面
-        WebElement addEle = driver.findElement(AppiumBy.xpath("//*[@text=\"添加成员\"]"));
-        if (addEle.isEnabled()) {
-            System.out.println("元素不可用: " + addEle.getText());
-            return;
-        }
-        addEle.click();
+        driver.findElement(AppiumBy.xpath("//*[@text=\"添加成员\"]")).click();
+
         // 定位手动添加输入成员按钮并进入添加详情页
-        WebElement manualAddEle = driver.findElement(AppiumBy.id("com.tencent.wework:id/e5q"));
-        if (manualAddEle.isEnabled()) {
-            System.out.println("元素不可用: " + manualAddEle.getText());
-            return;
-        }
-        manualAddEle.click();
+        driver.findElement(AppiumBy.id("com.tencent.wework:id/e5q")).click();
+
         // 定位姓名输入框并输入姓名
         WebElement fullNameEle = driver.findElement(AppiumBy.id("com.tencent.wework:id/c68"));
-        if (fullNameEle.isEnabled()) {
-            System.out.println("元素不可用: " + fullNameEle.getText());
-            return;
-        }
+        // 用时间戳生成随机姓名
         String name = System.currentTimeMillis() + "张三";
         fullNameEle.sendKeys(name);
         //定位手机号输入框并输入手机号
         WebElement telephoneEle = driver.findElement(AppiumBy.id("com.tencent.wework:id/inm"));
-        if (telephoneEle.isEnabled()) {
-            System.out.println("元素不可用: " + telephoneEle.getText());
-            return;
-        }
+        // 用时间戳生成随机手机号
         String telephoneNumber = "183" + System.currentTimeMillis() / 100000;
         telephoneEle.sendKeys(telephoneNumber);
         //定位保存按钮
-        WebElement preserveEle = driver.findElement(AppiumBy.id("com.tencent.wework:id/b45"));
-        if (preserveEle.isEnabled()) {
-            System.out.println("元素不可用: " + preserveEle.getText());
-            return;
-        }
-        preserveEle.click();
+        driver.findElement(AppiumBy.id("com.tencent.wework:id/b45")).click();
+
         // 返回成员列表
         driver.navigate().back();
         //获取列表成员名字
